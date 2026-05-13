@@ -1,7 +1,7 @@
 [project]
 name = "parallel_unpack"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "A simple and efficient library to unpack `.zip` and `.tar.gz` archives in parallel, speeding up the extraction of large archives."
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
