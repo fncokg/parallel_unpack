@@ -115,6 +115,8 @@ def parallel_unpack(
     else:
         raise ValueError(f"Unsupported archive format: {archive_file}")
 
+    log(f"Reading archive: {archive_file.name}")
+
     files = reader_func(archive_file)
     n_files = len(files)
 
@@ -161,14 +163,12 @@ def parallel_unpack(
         else:
             target_dir_part = target_dir
         target_dir_part.mkdir(parents=True, exist_ok=True)
-        unpack_worker = partial(
-            worker_func, archive_file=archive_file, target_dir=target_dir_part
-        )
+        unpack_worker = partial(worker_func, archive_file, target_dir=target_dir_part)
 
         desc = (
-            f"{archive_file} (part {i_part+1}/{n_parts}, {chunk_size} files per chunk)"
+            f"{archive_file.name} (part {i_part+1}/{n_parts}, {chunk_size} files per chunk)"
             if n_parts > 1
-            else f"{archive_file} (all files, {chunk_size} files per chunk)"
+            else f"{archive_file.name} (all files, {chunk_size} files per chunk)"
         )
         with executor_class(max_workers=num_workers) as executor:
             # Iterate over the map iterator directly without converting to a list
@@ -178,3 +178,4 @@ def parallel_unpack(
                 desc=desc,
             ):
                 pass
+    log(f"Finished unpacking: {archive_file.name}")
